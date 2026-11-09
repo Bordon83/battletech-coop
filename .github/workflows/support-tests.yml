@@ -1,0 +1,34 @@
+name: Battlefield support core
+
+on:
+  push:
+    paths:
+      - 'src/BattlefieldSupport/**'
+      - 'tests/SupportTests/**'
+      - '.github/workflows/support-tests.yml'
+  pull_request:
+    paths:
+      - 'src/BattlefieldSupport/**'
+      - 'tests/SupportTests/**'
+      - '.github/workflows/support-tests.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  support:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build independent net472 library
+        run: dotnet build src/BattlefieldSupport -c Release -warnaserror
+      - name: Test support behavior without game assemblies
+        run: dotnet run --project tests/SupportTests -c Release
+      - name: Test existing network core
+        run: dotnet run --project tests/NetTests -c Release
