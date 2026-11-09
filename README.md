@@ -53,6 +53,27 @@ game and run the exact same mod list.
 
 ## Building
 
+### Optional Battlefield Support prototype (0.1.0)
+
+The separate `src/BattlefieldSupport/` library provides a host-authoritative shared support
+arsenal, C-Bills accounting and a PC mission-preparation contract. It is **not yet a playable
+ModTek extension**: no game API hooks, UI widgets, save adapter or combat effects are installed.
+See [docs/BATTLEFIELD_SUPPORT.md](docs/BATTLEFIELD_SUPPORT.md) for the plan, verified integration
+points, economics and limitations. This library does not change the co-op mod's version.
+
+With a .NET 8 SDK (no game install required):
+
+```powershell
+dotnet build src/BattlefieldSupport -c Release
+dotnet run --project tests/SupportTests -c Release
+```
+
+The library targets .NET Framework 4.7.2 / C# 7.3, matching the existing mod. On machines without
+the targeting pack, the SDK restores Microsoft's reference-assembly package for that build.
+The headless tests compile the same source on .NET 8 without third-party test packages.
+
+### Existing co-op mod
+
 1. Copy `GameDir.props.example` to `GameDir.props` and set `BattleTechDir` to your install.
    (The build only reads game DLLs from it; it never writes there.)
 2. `dotnet build src/BattletechCoop -c Release`
